@@ -26,14 +26,17 @@ loo <- function(trainData)
 
   for (i in 1:l)
   {
+    # sorting data without curent elementh
     orderedTrainData <- sortObjectsByDist(trainData[-i, ], trainData[i, 1:n-1])
 
     for (j in 1:(l-1))
     {
+      # get it's class
       classes <- orderedTrainData[1:j, n]
       counts <- table(classes)
       class <- names(which.max(counts))
 
+      # looking for an error
       if (trainData[i, 3] != class)
       {
         loo[j] = loo[j] +1
