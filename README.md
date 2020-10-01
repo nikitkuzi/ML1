@@ -38,6 +38,35 @@ nn <- function(xl, u)
 
 Преимущества LOO в том, что каждый объект ровно один раз участвует в контроле, а длина обучающих подвыборок лишь на единицу меньше длины полной выборки.
 
+```R
+loo <- function(trainData)
+{
+  l <- dim(trainData)[1]
+  n <- dim(trainData)[2]
+  loo <- matrix(0, l-1, 1)
+
+  for (i in 1:l)
+  {
+    # sorting data without curent elementh
+    orderedTrainData <- sortObjectsByDist(trainData[-i, ], trainData[i, 1:n-1])
+
+    for (j in 1:(l-1))
+    {
+      # get it's class
+      classes <- orderedTrainData[1:j, n]
+      counts <- table(classes)
+      class <- names(which.max(counts))
+
+      # looking for an error
+      if (trainData[i, 3] != class)
+      {
+        loo[j] = loo[j] +1
+      }
+    }
+  }
+  return(loo)
+}
+```
 Для каждого k находится ошибка классификации и в качестве оптимального k выбирается то значение, для которого минимальна ошибка классфикации.
 
 ![alt text](https://github.com/nikitkuzi/ML1/blob/master/img/Loo.jpeg?raw=true)
