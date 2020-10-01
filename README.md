@@ -40,4 +40,4 @@ nn <- function(xl, u)
 
 Для каждого k находится ошибка классификации и в качестве оптимального k выбирается то значение, для которого минимальна ошибка классфикации.
 
-[alt text](https://github.com/nikitkuzi/ML1/blob/master/img/Loo.jpeg?raw=true)
+![alt text](https://github.com/nikitkuzi/ML1/blob/master/img/Loo.jpeg?raw=true)
