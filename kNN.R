@@ -20,6 +20,7 @@ sortObjectsByDist <- function(trainData, z, metricFunction = euclideanDistance)
 
 kNN <- function(trainData, z, k)
 {
+  # looking for the closest neighbours and return their class
   orderedData <- sortObjectsByDist(trainData, z)
   n <- dim(orderedData)[2] - 1
 
@@ -35,9 +36,13 @@ kNN <- function(trainData, z, k)
 
 colors <-c("setosa" = "red", "versicolor" = "green3", "virginica" = "blue")
 plot(iris[, 3:4], pch = 21, bg= colors[iris$Species], col = colors[iris$Species], asp = 1)
+
+# test data
 z <-cbind(runif(20, min = 0.1, max = 7.1),
           runif(20, min = 0.1, max = 3.0))
+
 trainData <-iris[, 3:5]
+
 for (i in 1:20)
 {
   class <- kNN(trainData, c(z[i, 1], z[i, 2]), k=6)
