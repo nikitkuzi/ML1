@@ -26,7 +26,7 @@ nn <- function(xl, u)
 }
 ```
 В результате работы программы мы получаем график, на котором круглые точки - выборка данных из датасета Iris, а квадратные точки - объекты из тестовой выборки.
-![alt text](https://github.com/nikitkuzi/ML1/blob/master/1|kNN/img/1nn.jpeg?raw=true)
+![alt text](https://github.com/nikitkuzi/ML1/blob/master/kNN/img/1nn.jpeg?raw=true)
 
 # LOO
 При использовании метода ближайших соседей (kNN) возникает вопрос: как выбрать оптимальное k? 
