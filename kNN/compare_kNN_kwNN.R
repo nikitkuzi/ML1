@@ -81,11 +81,11 @@ trainData <- data.frame(a,b,classes)
 
 
 colors <- c("a" = "red", "b" = "blue")
-plot(a, b, pch = 21, col = colors[classes], bg = colors[classes])
+plot(a, b, pch = 21, col = colors[classes], bg = colors[classes], main = "kNN")
 
-#class <- kNN(trainData, c(1, 1.2), k = 5)
-#points(1, 1.2, pch = 22, bg = colors[class], lwd = 2)
+class <- kNN(trainData, c(1, 1.2), k = 5)
+points(1, 1.2, pch = 22, bg = colors[class], lwd = 2)
 
-class <- kwNN(trainData, c(1, 1.2), k = 5)
-points(1, 1.2, pch = 23, bg = colors[class], lwd = 2)
+#class <- kwNN(trainData, c(1, 1.2), k = 5)
+#points(1, 1.2, pch = 23, bg = colors[class], lwd = 2)
 
