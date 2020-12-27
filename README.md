@@ -139,4 +139,8 @@ kwNN <- function(trainData, z, k = 1)
 
 Рассмотрим пример, показывающий преимущество _kwNN_ над _kNN_:
 
+kNN:
+<p float="left">
+    <img src="/img/compare_kNN" width="100">
+</p>
 
