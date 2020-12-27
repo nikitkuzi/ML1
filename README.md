@@ -141,6 +141,6 @@ kwNN <- function(trainData, z, k = 1)
 
 kNN:
 <p float="left">
-    <img src="/img/compare_kNN" width="100">
+    <img src="/kNN/img/compare_kNN" width="100">
 </p>
 
