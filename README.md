@@ -138,9 +138,8 @@ kwNN <- function(trainData, z, k = 1)
 ![alt text](https://github.com/nikitkuzi/ML1/blob/master/kNN/img/kwNN_Map.jpeg?raw=true)
 
 Рассмотрим пример, показывающий преимущество _kwNN_ над _kNN_:
-
-kNN:
 <p float="left">
-    <img src="https://github.com/nikitkuzi/ML1/blob/master/kNN/img/compare_kNN.jpeg?raw=true" width="100">
+    <img src="https://github.com/nikitkuzi/ML1/blob/master/kNN/img/compare_kNN.jpeg?raw=true" width="200">
+    <img src="https://github.com/nikitkuzi/ML1/blob/master/kNN/img/compare_kwNN.jpeg?raw=true" width="200">
 </p>
 
