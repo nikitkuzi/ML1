@@ -137,9 +137,54 @@ kwNN <- function(trainData, z, k = 1)
 :
 ![alt text](https://github.com/nikitkuzi/ML1/blob/master/kNN/img/kwNN_Map.jpeg?raw=true)
 
+Можно задать такой же вопрос, как и при использовании метода _k_ ближайших соседей: какое именно _k_ и _w(i)_ выбрать? Можно использовать все тот же критерий скользящего контроля, который использовался при методе _k_ ближаших соседей:
+
+```R
+loo <- function(trainData, q_min, q_max, k_min, k_max)
+{
+  l <- dim(trainData)[1]
+  n <- dim(trainData)[2] - 1
+  rows <- k_max - k_min + 1
+  cols <- (q_max - q_min) / 0.1 + 1
+  loo <- matrix(0, rows, cols)
+  for (i in 1:(l - 1))
+  {
+    orderedData <- sortObjectsByDist(trainData[-i,], trainData[i, 1:n])
+    for (k in k_min:k_max)
+    {
+      classes <- orderedData[1:k, n + 1]
+      q <- q_min
+      for (j in 1:cols) {
+        w <- get_weight(q, k)
+        counts <- c("setosa" = 0, "versicolor" = 0, "virginica" = 0)
+        for (z in 1:k) {
+          counts[classes[z]] <- counts[classes[z]] + w[z]
+        }
+        class <- names(which.max(counts))
+        if (trainData[i, 3] != class)
+        {
+          loo[k, j] = loo[k, j] + 1
+        }
+        q <- q + 0.1
+      }
+    }
+  }
+  for (i in 1:rows) {
+    for (j in 1:cols) {
+      if (loo[which.min(loo)] == loo[i, j]) {
+        return(c(i, q_min + 0.1 * (j - 1)))
+      }
+    }
+  }
+}
+```
+
+Зависимость ошибки от значения _k_ и _q_
+
+![alt text](https://github.com/nikitkuzi/ML1/blob/master/kNN/img/kwnn_loo_map.jpeg?raw=true)
+
 Рассмотрим пример, показывающий преимущество _kwNN_ над _kNN_:
-<p float="left">
-    <img src="https://github.com/nikitkuzi/ML1/blob/master/kNN/img/compare_kNN.jpeg?raw=true" width="500">
-    <img src="https://github.com/nikitkuzi/ML1/blob/master/kNN/img/compare_kwNN.jpeg?raw=true" width="500">
-</p>
+
+![alt text](https://github.com/nikitkuzi/ML1/blob/master/kNN/img/compare_kNN.jpeg?raw=true)
+![alt text](https://github.com/nikitkuzi/ML1/blob/master/kNN/img/compare_kwNN.jpeg?raw=true)
 
