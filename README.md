@@ -241,17 +241,75 @@ density <- function(x, Mat_expect, Sigma) {
 <a name="Наивный_алгоритм"></a>
 [К оглавлению](#Оглавление) 
 
+Специальный частный случай байесовского классификатора, основанный на дополнительном предположении, что объекты _x∈X_ описываются _n_ статистически независимыми признаками:
+
 ![alt text](https://github.com/nikitkuzi/ML1/blob/master/naive/img/equation1.jpeg?raw=true)
 
+Предположение о независимости означает, что функции правдоподобия классов представимы в виде:
+
+![alt text](https://github.com/nikitkuzi/ML1/blob/master/naive/img/equation2.jpeg?raw=true)
+
+Предположение о независимости существенно упрощает задачу, так как оценить _n_ одномерных плотностей гораздо легче, чем одну _n_-мерную плотность. К сожалению, оно крайне редко выполняется на практике, отсюда и название метода.
+
+Наивный байесовский классификатор может быть как параметрическим, так и непараметрическим, в зависимости от того, каким методом восстанавливаются одномерные плотности.
+
+Функция _density_ считает плотность заданного нормального расрпделения в точке.
+
+```R
+density <- function(x, mat_expect, deviation) {
+  return((1 / (deviation * sqrt(2 * pi))) * exp(-((x - mat_expect)^2) / (2 * deviation^2)))
+}
+```
+
+Далее необходимо реализовать классификатор, который будет выбирать класс по максимальной вероятности: 
+
+![alt text](https://github.com/nikitkuzi/ML1/blob/master/naive/img/equation3.jpeg?raw=true)
 
 
-Специальный частный случай байесовского классификатора, основанный на дополнительном предположении, что объекты _x∈X_ описываются _n_ статистически независимыми признаками:
+```R
+naive <- function(data, z, lambda) {
+  l <- dim(data)[1]
+  n <- dim(data)[2]
+  mat_exp = matrix(0, 0, 2)
+  dispersion = matrix(0, 0, 2)
+  tmp <- table(data[3])
+  prior <- tmp / sum(tmp)
+  classesNames <- unique(data[, 3])
+  mat_exp <- rbind(mat_exp, mat_expect(data[1:50,], rep(1 / tmp[1], tmp[1])))
+  mat_exp <- rbind(mat_exp, mat_expect(data[51:100,], rep(1 / tmp[1], tmp[1])))
+  mat_exp <- rbind(mat_exp, mat_expect(data[101:150,], rep(1 / tmp[1], tmp[1])))
+  dispersion <- rbind(dispersion, dispersion(data[1:50,], rep(1 / tmp[1], tmp[1])))
+  dispersion <- rbind(dispersion, dispersion(data[51:100,], rep(1 / tmp[1], tmp[1])))
+  dispersion <- rbind(dispersion, dispersion(data[101:150,], rep(1 / tmp[1], tmp[1])))
+  classes <- c("setosa" = 0, "versicolor" = 0, "virginca" = 0)
+  for (i in 1:3) {
+    density <- 0
+    for (j in 1:2) {
+      density <- density + log(density(z[j], mat_exp[i, j], sqrt(dispersion[i, j])))
+    }
+    classes[i] <- log(lambda[i]) + log(prior[i]) + density
+  }
+  return(which.max(classes))
+}
+```
+
+Карты классификации классов ирисов для различных _λ_: 
+
+λ(1,1,1)
+
+![alt text](https://github.com/nikitkuzi/ML1/blob/master/naive/img/naive_map1.jpeg?raw=true)
+
+λ(10,1,5)
+
+![alt text](https://github.com/nikitkuzi/ML1/blob/master/naive/img/naive_map2.jpeg?raw=true)
+
 ## Подстановочный алгоритм
 <a name="Подстановочный_алгоритм"></a>
 [К оглавлению](#Оглавление) 
 
 Нормальный _дискриминантный анализ_ — это один из вариантов байесовской классификации,
 восстанавливаемых в котором плотностей в качестве рассматривают моделей многомерные нормальные плотности:
+
 ![alt text](https://github.com/nikitkuzi/ML1/blob/master/plug_in/img/equation1.jpeg?raw=true)
 
 Восстанавливая параметры нормального распределения _μ(y)_ , Σ*y*
