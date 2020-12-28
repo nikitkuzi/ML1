@@ -295,12 +295,10 @@ naive <- function(data, z, lambda) {
 
 Карты классификации классов ирисов для различных _λ_: 
 
-λ(1,1,1)
-
+λ(1,1,1):
 ![alt text](https://github.com/nikitkuzi/ML1/blob/master/naive/img/naive_map1.jpeg?raw=true)
 
-λ(10,1,5)
-
+λ(10,1,5):
 ![alt text](https://github.com/nikitkuzi/ML1/blob/master/naive/img/naive_map2.jpeg?raw=true)
 
 ## Подстановочный алгоритм
