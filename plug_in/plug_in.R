@@ -67,7 +67,7 @@ me1 <- math_expec(objectsOfFirstClass)
 me2 <- math_expec(objectsOfSecondClass)
 sigma1 <- cov_matrix(objectsOfFirstClass, me1)
 sigma2 <- cov_matrix(objectsOfSecondClass, me2)
-coeffs <- getPlugInDiskriminantCoeffs(mu1, sigma1, me2, sigma2)
+coeffs <- getPlugInDiskriminantCoeffs(me1, sigma1, me2, sigma2)
 ## Рисуем дискриминантую функцию – красная линия
 x <- y <- seq(-10, 20, len = 100)
 z <- outer(x, y, function(x, y) coeffs["x^2"] * x^2 +
