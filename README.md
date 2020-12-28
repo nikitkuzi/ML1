@@ -13,7 +13,9 @@
 
    1.1. [Линии уровня нормального распределения](#Линии_уровня_нормального)
    
-   1.2. [Подстановочный алгоритм](#Подстановочный_алгоритм) 
+   1.2. [Наивный нормальный байесовский классификатор](#Наивный_алгоритм)
+   
+   1.3. [Подстановочный алгоритм](#Подстановочный_алгоритм) 
 1. Линейные алгоритмы классификации
   
 
@@ -227,13 +229,23 @@ density <- function(x, Mat_expect, Sigma) {
 ```
 
 Признаки некоррелированы, одинаковые дисперсии:
-![alt text](https://github.com/nikitkuzi/ML1/blob/master/levels/img/ne_cor_same_disp.jpeg?raw=true)
+![alt text](https://github.com/nikitkuzi/ML1/blob/master/levels/img/ne_kor_same_disp.jpeg?raw=true)
 
 Признаки некоррелированы, разные дисперсии:
 ![alt text](https://github.com/nikitkuzi/ML1/blob/master/levels/img/ne_cor_diff_disp.jpeg?raw=true)
 
 Признаки коррелированы, разные дисперсии:
-![alt text](https://github.com/nikitkuzi/ML1/blob/master/levels/img/cor_diff_disp.jpeg?raw=true)
+![alt text](https://github.com/nikitkuzi/ML1/blob/master/levels/img/cor_diff_disp.png?raw=true)
+
+## Наивный нормальный байесовский классификатор
+<a name="Наивный_алгоритм"></a>
+[К оглавлению](#Оглавление) 
+
+![alt text](https://github.com/nikitkuzi/ML1/blob/master/naive/img/equation1.jpeg?raw=true)
+
+
+
+Специальный частный случай байесовского классификатора, основанный на дополнительном предположении, что объекты _x∈X_ описываются _n_ статистически независимыми признаками:
 ## Подстановочный алгоритм
 <a name="Подстановочный_алгоритм"></a>
 [К оглавлению](#Оглавление) 
