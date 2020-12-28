@@ -218,6 +218,9 @@ loo <- function(trainData, q_min, q_max, k_min, k_max)
 принципа максимума правдоподобия:
 ![alt text](https://github.com/nikitkuzi/ML1/blob/master/plug_in/img/equation2.jpeg?raw=true)
 
+![alt text](https://github.com/nikitkuzi/ML1/blob/master/plug_in/img/parabola.jpeg?raw=true)
+![alt text](https://github.com/nikitkuzi/ML1/blob/master/plug_in/img/plugin1.jpeg?raw=true)
+
 
 
 
