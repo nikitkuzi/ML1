@@ -253,11 +253,38 @@ density <- function(x, Mat_expect, Sigma) {
 
 Наивный байесовский классификатор может быть как параметрическим, так и непараметрическим, в зависимости от того, каким методом восстанавливаются одномерные плотности.
 
-Функция _density_ считает плотность заданного нормального расрпделения в точке.
+Функция _density_ считает плотность заданного нормального расрпделения в точке:
 
 ```R
 density <- function(x, mat_expect, deviation) {
   return((1 / (deviation * sqrt(2 * pi))) * exp(-((x - mat_expect)^2) / (2 * deviation^2)))
+}
+```
+
+Функция _mat_expect_ находит матожидание случайной величины:
+```R
+mat_expect <- function(data, probability) {
+  l <- dim(data)[1]
+  n <- dim(data)[2]
+  expect <- rep(0, n)
+  for (i in 1:l) {
+    expect <- expect + data[i,] * probability
+  }
+  return(expect)
+}
+```
+
+Функция _dispersion_ считает дисперсию случайной величины:
+```R
+dispersion <- function(data, probability) {
+  l <- dim(data)[1]
+  n <- dim(data)[2]
+  mat_expect <- mat_expect(data, probability)
+  first <- matrix(0, 0, n)
+  for (i in 1:l) {
+    first <- rbind(first, ((data[i,] - mat_expect)^2))
+  }
+  return(mat_expect(first, probability))
 }
 ```
 
@@ -320,7 +347,55 @@ naive <- function(data, z, lambda) {
 принципа максимума правдоподобия:
 ![alt text](https://github.com/nikitkuzi/ML1/blob/master/plug_in/img/equation2.jpeg?raw=true)
 
+Функция _cov_mat_ - подсчет матрици ковариации:
+```R
+cov_mat <- function(objects, math_expec)
+{
+  l <- dim(objects)[1]
+  n <- dim(objects)[2]
+  cov_matrix <- matrix(0, n, n)
+  for (i in 1:l)
+  {
+    cov_matrix <- cov_matrix + (t(objects[i,] - math_expec) %*% (objects[i,] - math_expec)) / (l - 1)
+  }
+  return(cov_matrix)
+}
+```
+
+Реализация подстановочного алгоритма:
+```R
+plug_in <- function(data)
+{
+  mat_expec1 <- mat_expec(data[data[, 3] == 1, 1:2])
+  mat_expec2 <- mat_expec(data[data[, 3] == 2, 1:2])
+  cov_matrix1 <- cov_mat(data[data[, 3] == 1, 1:2], mat_expec1)
+  cov_matrix2 <- cov_mat(data[data[, 3] == 2, 1:2], mat_expec2)
+  inv_cov_matrix1 <- solve(cov_matrix1)
+  inv_cov_matrix2 <- solve(cov_matrix2)
+  f <- log(abs(det(cov_matrix1))) - log(abs(det(cov_matrix2))) + mat_expec1 %*% inv_cov_matrix1 %*% t(mat_expec1) - mat_expec2 %*% inv_cov_matrix2 %*% t(mat_expec2)
+  alpha <- inv_cov_matrix1 - inv_cov_matrix2
+  a <- alpha[1, 1]
+  b <- 2 * alpha[1, 2]
+  c <- alpha[2, 2]
+  beta <- inv_cov_matrix1 %*% t(mat_expec1) - inv_cov_matrix2 %*% t(mat_expec2)
+  d <- -2 * beta[1, 1]
+  e <- -2 * beta[2, 1]
+  return(c("x^2" = a, "xy" = b, "y^2" = c, "x" = d, "y" = e, "1" = f))
+}
+```
+![alt text](https://github.com/nikitkuzi/ML1/blob/master/plug_in/img/linear.jpeg?raw=true)
+
+
+В случаях, когда ковариационные матрицы классов не диагональны и не равны, разделяющие плоскости не линейны.
+
+Параболическая разделяющая плоскость:
 ![alt text](https://github.com/nikitkuzi/ML1/blob/master/plug_in/img/parabola.jpeg?raw=true)
+
+Гиперболическая разделяющая плоскость:
+![alt text](https://github.com/nikitkuzi/ML1/blob/master/plug_in/img/hyperparabola.jpeg?raw=true)
+
+Эллипсоидная разделяющая плоскость:
+![alt text](https://github.com/nikitkuzi/ML1/blob/master/plug_in/img/ellipse.jpeg?raw=true)
 
 
 
