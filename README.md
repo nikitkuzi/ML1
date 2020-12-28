@@ -10,8 +10,10 @@
    1.3. [Метод К взвешенных соседей](#Метод_к_взвешенных)
 
 1. Байесовские алгоритмы классификации
-  
-   1.1. [Подстановочный алгоритм](#Подстановочный_алгоритм) 
+
+   1.1. [Линии уровня нормального распределения](#Линии_уровня_нормального)
+   
+   1.2. [Подстановочный алгоритм](#Подстановочный_алгоритм) 
 1. Линейные алгоритмы классификации
   
 
@@ -190,8 +192,9 @@ loo <- function(trainData, q_min, q_max, k_min, k_max)
 ![alt text](https://github.com/nikitkuzi/ML1/blob/master/kNN/img/compare_kNN.jpeg?raw=true)
 ![alt text](https://github.com/nikitkuzi/ML1/blob/master/kNN/img/compare_kwNN.jpeg?raw=true)
 
-## Подстановочный алгоритм
-<a name="Подстановочный_алгоритм"></a>
+
+<a name="Линии_уровня_нормального"></a>
+## Линии уровня нормального распределения
 [К оглавлению](#Оглавление) 
 
 Байесовский подход является классическим в теории распознавания образов и лежит в основе многих методов. Он опирается на теорему о том, что
@@ -203,6 +206,37 @@ loo <- function(trainData, q_min, q_max, k_min, k_max)
 по обучающей выборке. В этом случае байесовский алгоритм перестает
 быть оптимальным. Поэтому, чем лучше удастся восстановить
 функции правдоподобия, тем ближебудет к оптимальному построенный алгоритм.
+
+Одним из способов представления функций многих переменных являются линии уровня: на разных значениях n-мерной функции проводятся гипперплоскости и все точки пересечения этой гипперплоскости с функцией отображаются на (n-1)-мерное пространство. Для функции двух переменных эти точки пересечения отображаются на плоскость XOY.
+
+Плотность _n_-мерного нормального распределения задается формулой:
+![alt text](https://github.com/nikitkuzi/ML1/blob/master/plug_in/img/equation1.jpeg?raw=true)
+
+Выведем из нее уравнения для линии уровня. Не сложными математическими операциями придем к уравнению:
+![alt text](https://github.com/nikitkuzi/ML1/blob/master/plug_in/img/equation3.jpeg?raw=true)
+
+Программная реализация данного алгоритма:
+```R
+density <- function(x, Mat_expect, Sigma) {
+  n = dim(Sigma)[1]
+  det = det(Sigma)
+  left <- 1/(sqrt((2 * pi)^ n * det))
+  right <- exp(1 / -2 * t(x - Mat_expect) %*% ginv(Sigma) %*% (x - Mat_expect))
+  return(left * right)
+}
+```
+
+Признаки некоррелированы, одинаковые дисперсии:
+![alt text](https://github.com/nikitkuzi/ML1/blob/master/levels/img/ne_cor_same_disp.jpeg?raw=true)
+
+Признаки некоррелированы, разные дисперсии:
+![alt text](https://github.com/nikitkuzi/ML1/blob/master/levels/img/ne_cor_diff_disp.jpeg?raw=true)
+
+Признаки коррелированы, разные дисперсии:
+![alt text](https://github.com/nikitkuzi/ML1/blob/master/levels/img/cor_diff_disp.jpeg?raw=true)
+## Подстановочный алгоритм
+<a name="Подстановочный_алгоритм"></a>
+[К оглавлению](#Оглавление) 
 
 Нормальный _дискриминантный анализ_ — это один из вариантов байесовской классификации,
 восстанавливаемых в котором плотностей в качестве рассматривают моделей многомерные нормальные плотности:
@@ -219,7 +253,7 @@ loo <- function(trainData, q_min, q_max, k_min, k_max)
 ![alt text](https://github.com/nikitkuzi/ML1/blob/master/plug_in/img/equation2.jpeg?raw=true)
 
 ![alt text](https://github.com/nikitkuzi/ML1/blob/master/plug_in/img/parabola.jpeg?raw=true)
-![alt text](https://github.com/nikitkuzi/ML1/blob/master/plug_in/img/plugin1.jpeg?raw=true)
+
 
 
 
