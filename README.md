@@ -648,5 +648,5 @@ sgHeb <- function(xl, eta = 1, lambda = 1 / 6)
 }
 ```
 
-Сравним его с Адаптивным линейным элементом:
+Сравним его с Адаптивным линейным элементом, где крассная линия - Адаптивный, фиолетовая - Хэбба:
 ![alt text](https://github.com/nikitkuzi/ML1/blob/master/adaline/img/adaline_heb.jpeg?raw=true)
