@@ -15,7 +15,9 @@
    
    1.2. [Наивный нормальный байесовский классификатор](#Наивный_алгоритм)
    
-   1.3. [Подстановочный алгоритм](#Подстановочный_алгоритм) 
+   1.3. [Подстановочный алгоритм](#Подстановочный_алгоритм)
+   
+   1.4. [Линейный дискриминант Фишера](#Фишер) 
 1. Линейные алгоритмы классификации
   
 
@@ -303,11 +305,11 @@ naive <- function(data, z, lambda) {
   prior <- tmp / sum(tmp)
   classesNames <- unique(data[, 3])
   mat_exp <- rbind(mat_exp, mat_expect(data[1:50,], rep(1 / tmp[1], tmp[1])))
-  mat_exp <- rbind(mat_exp, mat_expect(data[51:100,], rep(1 / tmp[1], tmp[1])))
-  mat_exp <- rbind(mat_exp, mat_expect(data[101:150,], rep(1 / tmp[1], tmp[1])))
+  mat_exp <- rbind(mat_exp, mat_expect(data[51:100,], rep(1 / tmp[2], tmp[2])))
+  mat_exp <- rbind(mat_exp, mat_expect(data[101:150,], rep(1 / tmp[3], tmp[3])))
   dispersion <- rbind(dispersion, dispersion(data[1:50,], rep(1 / tmp[1], tmp[1])))
-  dispersion <- rbind(dispersion, dispersion(data[51:100,], rep(1 / tmp[1], tmp[1])))
-  dispersion <- rbind(dispersion, dispersion(data[101:150,], rep(1 / tmp[1], tmp[1])))
+  dispersion <- rbind(dispersion, dispersion(data[51:100,], rep(1 / tmp[2], tmp[2])))
+  dispersion <- rbind(dispersion, dispersion(data[101:150,], rep(1 / tmp[3], tmp[3])))
   classes <- c("setosa" = 0, "versicolor" = 0, "virginca" = 0)
   for (i in 1:3) {
     density <- 0
@@ -383,8 +385,6 @@ plug_in <- function(data)
   return(c("x^2" = a, "xy" = b, "y^2" = c, "x" = d, "y" = e, "1" = f))
 }
 ```
-![alt text](https://github.com/nikitkuzi/ML1/blob/master/plug_in/img/linear.jpeg?raw=true)
-
 
 В случаях, когда ковариационные матрицы классов не диагональны и не равны, разделяющие плоскости не линейны.
 
@@ -397,8 +397,22 @@ plug_in <- function(data)
 Эллипсоидная разделяющая плоскость:
 ![alt text](https://github.com/nikitkuzi/ML1/blob/master/plug_in/img/ellipse.jpeg?raw=true)
 
+## Линейный дискриминант Фишера
+<a name="Фишер"></a>
+[К оглавлению](#Оглавление) 
 
+Фишер (1936 г.) предложил простую эвристику «Ковариационные матрицы классов равны», позволяющую увеличить число объектов, по которым
+оценивается ковариационная матрица, повысить её устойчивость и заодно упростить алгоритм обучения.
+Пусть ковариационные матрицы классов одинаковы и равны _Σ_. Оценим _Σ_ по
+всем _ℓ_ объектам обучающей выборки. С учетом поправки на смещённость
+![alt text](https://github.com/nikitkuzi/ML1/blob/master/fisher/img/equation1.jpg?raw=true)
 
+В этом случае разделяющая поверхность линейна (кусочно-линейна). Подстановочный алгоритм имеет вид:
+![alt text](https://github.com/nikitkuzi/ML1/blob/master/fisher/img/equation2.jpg?raw=true)
 
-
-
+Этот алгоритм называется линейным дискриминантом Фишера (ЛДФ).
+Он неплохо работает, когда формы классов действительно близки к нормальным и не слишком сильно различаются. В этом случае линейное решающее
+правило близко к оптимальному байесовскому, но существенно более устойчиво, чем квадратичное, и часто обладает лучшей обобщающей способностью.
+Вероятность ошибки линейного дискриминанта Фишера выражается через
+расстояние Махаланобиса между классами, в случае, когда классов два:
+![alt text](https://github.com/nikitkuzi/ML1/blob/master/fisher/img/equation3.jpg?raw=true)

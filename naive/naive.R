@@ -32,11 +32,11 @@ naive <- function(data, z, lambda) {
   prior <- tmp / sum(tmp)
   classesNames <- unique(data[, 3])
   mat_exp <- rbind(mat_exp, mat_expect(data[1:50,], rep(1 / tmp[1], tmp[1])))
-  mat_exp <- rbind(mat_exp, mat_expect(data[51:100,], rep(1 / tmp[1], tmp[1])))
-  mat_exp <- rbind(mat_exp, mat_expect(data[101:150,], rep(1 / tmp[1], tmp[1])))
+  mat_exp <- rbind(mat_exp, mat_expect(data[51:100,], rep(1 / tmp[2], tmp[2])))
+  mat_exp <- rbind(mat_exp, mat_expect(data[101:150,], rep(1 / tmp[3], tmp[3])))
   dispersion <- rbind(dispersion, dispersion(data[1:50,], rep(1 / tmp[1], tmp[1])))
-  dispersion <- rbind(dispersion, dispersion(data[51:100,], rep(1 / tmp[1], tmp[1])))
-  dispersion <- rbind(dispersion, dispersion(data[101:150,], rep(1 / tmp[1], tmp[1])))
+  dispersion <- rbind(dispersion, dispersion(data[51:100,], rep(1 / tmp[2], tmp[2])))
+  dispersion <- rbind(dispersion, dispersion(data[101:150,], rep(1 / tmp[3], tmp[3])))
   classes <- c("setosa" = 0, "versicolor" = 0, "virginca" = 0)
   for (i in 1:3) {
     density <- 0
