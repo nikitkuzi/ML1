@@ -1,11 +1,11 @@
 library(MASS)
-mat_expec <- function(objects)
+mat_expec <- function(data)
 {
-  n <- dim(objects)[2]
+  n <- dim(data)[2]
   math_expec <- matrix(NA, 1, n)
   for (col in 1:n)
   {
-    math_expec[1, col] = mean(objects[, col])
+    math_expec[1, col] = mean(data[, col])
   }
   return(math_expec)
 }
