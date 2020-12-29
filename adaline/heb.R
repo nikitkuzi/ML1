@@ -1,7 +1,8 @@
-lossFunctionAdaline <- function(x)
+lossFunctionHeb <- function(x)
 {
-  return((x - 1)^2)
+  return(if (x < 1) -x else 0)
 }
+
 
 normalize <- function(xl)
 {
@@ -19,7 +20,7 @@ addcol <- function(xl)
   xl <- cbind(xl[, 1:n], seq(from = -1, to = -1, length.out = l), xl[, n + 1])
 }
 
-sgAdaline <- function(xl, eta = 1, lambda = 1 / 6)
+sgHeb <- function(xl, eta = 1, lambda = 1 / 6)
 {
   l <- dim(xl)[1]
   n <- dim(xl)[2] - 1
@@ -71,7 +72,7 @@ set2 <- mvrnorm(111, Mu2, Sigma2)
 data <- rbind(cbind(set1, 1), cbind(set2, -1))
 dataNormalized <- addcol(normalize(data))
 colors <- c("1" = "blue", "-1" = "green")
-plot(dataNormalized[, 1], dataNormalized[, 2], pch = 21,bg = colors[as.character(data[,3])], asp = 1)
+plot(dataNormalized[, 1], dataNormalized[, 2], pch = 21, bg = colors[as.character(data[, 3])], asp = 1)
 
-w <- sgAdaline(dataNormalized)
-abline(a = w[3] / w[2], b = -w[1] / w[2], lwd = 3, col = "red")
+ww <- sgHeb(dataNormalized)
+abline(a = ww[3] / ww[2], b = -ww[1] / ww[2], lwd = 3, col = "purple")
