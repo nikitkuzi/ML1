@@ -437,7 +437,7 @@ fisher <- function(data)
 }
 ```
 
-Разделяющая плоскость задается уравнением: ![alt text](https://github.com/nikitkuzi/ML1/blob/master/fisher/img/equation4.jpeg?raw=true)
+Разделяющая плоскость задается уравнением: ![alt text](https://github.com/nikitkuzi/ML1/blob/master/fisher/img/equation5.svg?raw=true)
 
 В результате получаем такие разделяющие поверхности:
 
@@ -445,5 +445,6 @@ fisher <- function(data)
 ![alt text](https://github.com/nikitkuzi/ML1/blob/master/fisher/img/line2.jpeg?raw=true)
 
 Основным преимуществом алгоритма по сравнению с подстановочным алгоритмом является уменьшение эффекта плохой обусловленности ковариационной матрицы при недостаточных данных и простате реализации метода.
+
 ![alt text](https://github.com/nikitkuzi/ML1/blob/master/fisher/img/fisher_compare.jpeg?raw=true)
 ![alt text](https://github.com/nikitkuzi/ML1/blob/master/fisher/img/plugin_compare.jpeg?raw=true)
