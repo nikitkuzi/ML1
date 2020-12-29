@@ -19,6 +19,10 @@
    
    1.4. [Линейный дискриминант Фишера](#Фишер) 
 1. Линейные алгоритмы классификации
+
+   1.1. [Стохастический градиентный спуск](#Стохастический)
+   
+   1.2. [Адалайн. Правило Хэбба](#Адалайн)
   
 
 
@@ -448,3 +452,127 @@ fisher <- function(data)
 
 ![alt text](https://github.com/nikitkuzi/ML1/blob/master/fisher/img/fisher_compare.jpeg?raw=true)
 ![alt text](https://github.com/nikitkuzi/ML1/blob/master/fisher/img/plugin_compare.jpeg?raw=true)
+
+
+## Стохастический градиентный спуск
+<a name="Стохастический"></a>
+[К оглавлению](#Оглавление) 
+Пусть _X_ = _R_ и _Y_ = {−1; +1}. Алгоритм _a_*(x,w)* = _sign(w, x)_ , _w ∈ (R)_ является _линейным алгоритмом классификации_.
+
+Для подбора оптимального (минимизирующего эмпирический
+риск _Q(w,X(ℓ))_ значения вектора весов w будем пользоваться методом
+стохастического градиента — итерационный процесс, на каждом
+шаге которого сдвигаемся в сторону противоположную вектору
+градиента _Q′(w, X(ℓ))_ до тех пор, пока вектор весов _w_ не перестанет
+изменяться, причем вычисления градиента производится не на всех
+объектах обучения, а выбирается случайный объект (отсюда и название
+метода _стохастический_), на основе которого и происходят
+вычисления. В зависимости от функции потерь, которая используется
+в функционале эмпирического риска, будем получать различные
+линейные алгоритмы классификации.
+
+При использовании метода стохастического градиента необходимо нормализовать данные:
+```R
+normalize <- function(xl)
+{
+  n <- dim(xl)[2] - 1
+  for (i in 1:n) {
+    xl[, i] <- (xl[, i] - mean(xl[, i])) / sd(xl[, i])
+  }
+  return(xl)
+}
+
+addcol <- function(xl)
+{
+  l <- dim(xl)[1]
+  n <- dim(xl)[2] - 1
+  xl <- cbind(xl[, 1:n], seq(from = -1, to = -1, length.out = l), xl[, n + 1])
+}
+```
+
+Реализация алгоритма:
+
+```R
+margins <- array(dim = l)
+    for (i in 1:l)
+    {
+      xi <- xl[i, 1:n]
+      yi <- xl[i, n + 1]
+      margins[i] <- crossprod(w, xi) * yi
+    }
+    errorIndexes <- which(margins <= 0)
+    if (length(errorIndexes) > 0)
+    {
+      i <- sample(1:l, 1)
+      iterCount <- iterCount + 1
+      xi <- xl[i, 1:n]
+      yi <- xl[i, n + 1]
+      wx <- crossprod(w, xi)
+      margin <- wx * yi
+      ex <- lossFunction(margin)
+      w <- w - eta * (wx - yi) * xi
+      Qprev <- Q
+      Q <- (1 - lambda) * Q + lambda * ex
+    } else
+    {
+      break
+    }
+```
+
+## Адалайн. Правило Хэбба
+<a name="Адалайн"></a>
+[К оглавлению](#Оглавление) 
+
+Adaline или же Адаптивный линейный элемент - частный случай линейного классификатора или искусственной нейронной сети с одним слоем.
+Возьмем функцию потерь ![alt text](https://github.com/nikitkuzi/ML1/blob/master/adaline/img/equation1.svg?raw=true),
+Продифференцировав эту функцию, получим правило обновления весов ![alt text](https://github.com/nikitkuzi/ML1/blob/master/adaline/img/equation2.svg?raw=true)
+
+![alt text](https://github.com/nikitkuzi/ML1/blob/master/adaline/img/equation3.jpg?raw=true)
+
+Реализация:
+
+```R
+sgAdaline <- function(xl, eta = 1, lambda = 1 / 6)
+{
+  l <- dim(xl)[1]
+  n <- dim(xl)[2] - 1
+  w <- c(1 / 2, 1 / 2, 1 / 2)
+  iterCount <- 0
+  Q <- 0
+  for (i in 1:l) {
+    wx <- sum(w * xl[i, 1:n])
+    margin <- wx * xl[i, n + 1]
+    Q <- Q + lossFunction(margin)
+  }
+  repeat
+  {
+    margins <- array(dim = l)
+    for (i in 1:l)
+    {
+      xi <- xl[i, 1:n]
+      yi <- xl[i, n + 1]
+      margins[i] <- crossprod(w, xi) * yi
+    }
+    errorIndexes <- which(margins <= 0)
+    if (length(errorIndexes) > 0)
+    {
+      i <- sample(1:l, 1)
+      iterCount <- iterCount + 1
+      xi <- xl[i, 1:n]
+      yi <- xl[i, n + 1]
+      wx <- crossprod(w, xi)
+      margin <- wx * yi
+      ex <- lossFunction(margin)
+      w <- w - eta * (wx - yi) * xi
+      Qprev <- Q
+      Q <- (1 - lambda) * Q + lambda * ex
+    } else
+    {
+      break
+    }
+  }
+  return(w)
+}
+```
+
+
