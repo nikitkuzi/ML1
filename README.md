@@ -417,3 +417,33 @@ plug_in <- function(data)
 расстояние Махаланобиса между классами, в случае, когда классов два:
 
 ![alt text](https://github.com/nikitkuzi/ML1/blob/master/fisher/img/equation3.jpg?raw=true)
+
+Реализация поиска ковариационных матриц:
+
+```R
+fisher <- function(data)
+{
+  n <- table(data[, 3])[1]
+  mat_expec1 <- mat_expec(data[data[, 3] == 1, 1:2])
+  mat_expec2 <- mat_expec(data[data[, 3] == 2, 1:2])
+  cov_mat <- matrix(0, 2, 2)
+  for (i in 1:n) {
+    cov_mat <- cov_mat + (t(data[i, 1:2] - mat_expec1) %*% (data[i, 1:2] - mat_expec1)) / (n - 1)
+  }
+  for (i in range(n, 2 * n)) {
+    cov_mat <- cov_mat + (t(data[i, 1:2] - mat_expec2) %*% (data[i, 1:2] - mat_expec2)) / (n - 1)
+  }
+  return(cov_mat)
+}
+```
+
+Разделяющая плоскость задается уравнением: ![alt text](https://github.com/nikitkuzi/ML1/blob/master/fisher/img/equation4.jpeg?raw=true)
+
+В результате получаем такие разделяющие поверхности:
+
+![alt text](https://github.com/nikitkuzi/ML1/blob/master/fisher/img/line1.jpeg?raw=true)
+![alt text](https://github.com/nikitkuzi/ML1/blob/master/fisher/img/line2.jpeg?raw=true)
+
+Основным преимуществом алгоритма по сравнению с подстановочным алгоритмом является уменьшение эффекта плохой обусловленности ковариационной матрицы при недостаточных данных и простате реализации метода.
+![alt text](https://github.com/nikitkuzi/ML1/blob/master/fisher/img/fisher_compare.jpeg?raw=true)
+![alt text](https://github.com/nikitkuzi/ML1/blob/master/fisher/img/plugin_compare.jpeg?raw=true)
