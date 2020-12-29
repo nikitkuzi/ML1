@@ -351,14 +351,14 @@ naive <- function(data, z, lambda) {
 
 Функция _cov_mat_ - подсчет матрици ковариации:
 ```R
-cov_mat <- function(objects, math_expec)
+cov_mat <- function(data, math_expec)
 {
-  l <- dim(objects)[1]
-  n <- dim(objects)[2]
+  l <- dim(data)[1]
+  n <- dim(data)[2]
   cov_matrix <- matrix(0, n, n)
   for (i in 1:l)
   {
-    cov_matrix <- cov_matrix + (t(objects[i,] - math_expec) %*% (objects[i,] - math_expec)) / (l - 1)
+    cov_matrix <- cov_matrix + (t(data[i,] - math_expec) %*% (data[i,] - math_expec)) / (l - 1)
   }
   return(cov_matrix)
 }
@@ -415,4 +415,5 @@ plug_in <- function(data)
 правило близко к оптимальному байесовскому, но существенно более устойчиво, чем квадратичное, и часто обладает лучшей обобщающей способностью.
 Вероятность ошибки линейного дискриминанта Фишера выражается через
 расстояние Махаланобиса между классами, в случае, когда классов два:
+
 ![alt text](https://github.com/nikitkuzi/ML1/blob/master/fisher/img/equation3.jpg?raw=true)

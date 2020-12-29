@@ -10,14 +10,14 @@ mat_expec <- function(objects)
   return(math_expec)
 }
 
-cov_mat <- function(objects, math_expec)
+cov_mat <- function(data, math_expec)
 {
-  l <- dim(objects)[1]
-  n <- dim(objects)[2]
+  l <- dim(data)[1]
+  n <- dim(data)[2]
   cov_matrix <- matrix(0, n, n)
   for (i in 1:l)
   {
-    cov_matrix <- cov_matrix + (t(objects[i,] - math_expec) %*% (objects[i,] - math_expec)) / (l - 1)
+    cov_matrix <- cov_matrix + (t(data[i,] - math_expec) %*% (data[i,] - math_expec)) / (l - 1)
   }
   return(cov_matrix)
 }

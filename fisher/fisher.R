@@ -1,66 +1,78 @@
-library(MASS)
-mat_expec <- function(objects)
-{
-  n <- dim(objects)[2]
-  math_expec <- matrix(NA, 1, n)
-  for (col in 1:n)
-  {
-    math_expec[1, col] = mean(objects[, col])
+mat_expect <- function(data, probability) {
+  l <- dim(data)[1]
+  n <- dim(data)[2]
+  expect <- rep(0, n)
+  for (i in 1:l) {
+    expect <- expect + data[i,] * probability[i]
   }
-  return(math_expec)
+  return(expect)
 }
 
-cov_mat <- function(objects, math_expec)
-{
-  l <- dim(objects)[1]
-  n <- dim(objects)[2]
-  cov_matrix <- matrix(0, n, n)
-  for (i in 1:l)
-  {
-    cov_matrix <- cov_matrix + (t(objects[i,] - math_expec) %*% (objects[i,] - math_expec)) / (l - 1)
+dispersion <- function(data, probability) {
+  l <- dim(data)[1]
+  n <- dim(data)[2]
+  mat_expect <- mat_expect(data, probability)
+  first <- matrix(0, 0, n)
+  for (i in 1:l) {
+    first <- rbind(first, ((data[i,] - mat_expect)^2))
   }
-  return(cov_matrix)
+  return(mat_expect(first, probability))
 }
 
-
-plug_in <- function(data)
-{
-  mat_expec1 <- mat_expec(data[data[, 3] == 1, 1:2])
-  mat_expec2 <- mat_expec(data[data[, 3] == 2, 1:2])
-  cov_matrix1 <- cov_mat(data[data[, 3] == 1, 1:2], mat_expec1)
-  cov_matrix2 <- cov_mat(data[data[, 3] == 2, 1:2], mat_expec2)
-  inv_cov_matrix1 <- solve(cov_matrix1)
-  inv_cov_matrix2 <- solve(cov_matrix2)
-  f <- log(abs(det(cov_matrix1))) - log(abs(det(cov_matrix2))) + mat_expec1 %*% inv_cov_matrix1 %*% t(mat_expec1) - mat_expec2 %*% inv_cov_matrix2 %*% t(mat_expec2)
-  alpha <- inv_cov_matrix1 - inv_cov_matrix2
-  a <- alpha[1, 1]
-  b <- 2 * alpha[1, 2]
-  c <- alpha[2, 2]
-  beta <- inv_cov_matrix1 %*% t(mat_expec1) - inv_cov_matrix2 %*% t(mat_expec2)
-  d <- -2 * beta[1, 1]
-  e <- -2 * beta[2, 1]
-  return(c("x^2" = a, "xy" = b, "y^2" = c, "x" = d, "y" = e, "1" = f))
+density <- function(x, mat_expect, deviation) {
+  return((1 / (deviation * sqrt(2 * pi))) * exp(-((x - mat_expect)^2) / (2 * deviation^2)))
 }
 
-Sigma1 <- matrix(c(1, 0, 0, 2), 2, 2)
-Sigma2 <- matrix(c(1, 0, 0, 2), 2, 2)
-Mu1 <- c(0, 0)
-Mu2 <- c(3, 4)
-set1 <- mvrnorm(250, Mu1, Sigma1)
-set2 <- mvrnorm(250, Mu2, Sigma2)
-data <- rbind(cbind(set1, 1), cbind(set2, 2))
-colors <- c("blue", "green")
-plot(data[, 1], data[, 2], pch = 21, bg = colors[data[, 3]], asp = 1)
+naive <- function(data, z, lambda) {
+  l <- dim(data)[1]
+  n <- dim(data)[2]
+  mat_exp = matrix(0, 0, 2)
+  dispersion = matrix(0, 0, 2)
+  tmp <- table(data[3])
+  prior <- tmp / sum(tmp)
+  classesNames <- unique(data[, 3])
+  mat_exp <- rbind(mat_exp, mat_expect(data[1:50,], rep(1 / tmp[1], tmp[1])))
+  mat_exp <- rbind(mat_exp, mat_expect(data[51:100,], rep(1 / tmp[2], tmp[2])))
+  mat_exp <- rbind(mat_exp, mat_expect(data[101:150,], rep(1 / tmp[3], tmp[3])))
+  dispersion <- rbind(dispersion, dispersion(data[1:50,], rep(1 / tmp[1], tmp[1])))
+  dispersion <- rbind(dispersion, dispersion(data[51:100,], rep(1 / tmp[2], tmp[2])))
+  dispersion <- rbind(dispersion, dispersion(data[101:150,], rep(1 / tmp[3], tmp[3])))
+  classes <- c("setosa" = 0, "versicolor" = 0, "virginca" = 0)
+  for (i in 1:3) {
+    density <- 0
+    for (j in 1:2) {
+      density <- density + log(density(z[j], mat_exp[i, j], sqrt(dispersion[i, j])))
+    }
+    classes[i] <- log(lambda[i]) + log(prior[i]) + density
+  }
+  return(which.max(classes))
+}
 
-coeffs <- plug_in(data)
-## Рисуем дискриминантую функцию – красная линия
-x <- y <- seq(-10, 20, len = 100)
-z <- outer(x, y, function(x, y) coeffs["x^2"] * x^2 +
-  coeffs["xy"] * x * y
-  +
-  coeffs["y^2"] * y^2 +
-  coeffs["x"] * x
-  +
-  coeffs["y"] * y +
-  coeffs["1"])
-contour(x, y, z, levels = 0, drawlabels = FALSE, lwd = 5, col = "red", add = TRUE)
+colors <- c("setosa" = "red", "versicolor" = "green3", "virginica" = "blue")
+plot(iris[, 3:4], pch = 21, bg = colors[iris$Species], col = colors[iris$Species], asp = 1)
+Data <- iris[, 3:5]
+## test data
+#z <- cbind(runif(20, min = 0.1, max = 7.1),
+#           runif(20, min = 0.1, max = 3.0))
+#
+#Data <- iris[, 3:5]
+#for (i in 1:20)
+#{
+#  class <- naive(Data, c(z[i, 1], z[i, 2]), c(1, 1, 1))
+#  points(z[i, 1], z[i, 2], pch = 22, bg = colors[class], lwd = 2)
+#}
+deltaX <- 2
+  deltaY <- 2
+
+l <- min(iris$Petal.Length)
+r <- max(iris$Petal.Length)
+b <- min(iris$Petal.Width)
+t <- max(iris$Petal.Width)
+
+for (x in seq(l, r, deltaX)) {
+  for (y in seq(b, t, deltaY)) {
+    z <- c(x, y)
+    class <- naive(Data, z, c(10, 1, 5))
+    points(x, y, bg = colors[class], col = colors[class])
+  }
+}

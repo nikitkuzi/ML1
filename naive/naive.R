@@ -3,7 +3,7 @@ mat_expect <- function(data, probability) {
   n <- dim(data)[2]
   expect <- rep(0, n)
   for (i in 1:l) {
-    expect <- expect + data[i,] * probability
+    expect <- expect + data[i,] * probability[i]
   }
   return(expect)
 }
