@@ -23,6 +23,8 @@
    1.1. [Стохастический градиентный спуск](#Стохастический)
    
    1.2. [Адалайн. Правило Хэбба](#Адалайн)
+   
+   1.3. [Логическая регрессия](#Логическая)
   
 
 
@@ -596,6 +598,19 @@ sgAdaline <- function(xl, eta = 1, lambda = 1 / 6)
 
 Для уменьшения скалярного произведения в правой части, необходимо уменьшить веса связей при тех переменных , которые равны 1. Необходимо также провести эту процедуру для всех активных нейронов предыдущих слоев.
 
+Формализуем данное правило. Пока будем считать признаки бинарными:
+fj (x) ∈ {0, 1}, j = 1, . . . , n, yi ∈ {−1, +1}, i = 1, . . . , n. Тогда при классификации a(xi) объекта xi возможны следующие три случая:
+1. Если ответ a(xi) совпадает с истинным yi
+, то вектор весов изменять
+не надо.
+2. Если a(xi) = −1 и yi = 1, то вектор весов w увеличивается (можно
+только те wj , для которых fj (xi) 6= 0) w = w + ηxi
+, где η > 0 — темп
+обучения.
+3. Если a(xi) = 1 и yi = −1, то вектор весов w уменьшается: w = w−ηxi
+.
+Эти три случая объединяются в так называемое правило Хэбба.
+
 Выберем функцию потерь:
 ```R
 lossFunctionHeb <- function(x)
@@ -603,6 +618,10 @@ lossFunctionHeb <- function(x)
   return(if (x < 1) -x else 0)
 }
 ```
+Правило обновления весов:
+![alt text](https://github.com/nikitkuzi/ML1/blob/master/adaline/img/equation4.png?raw=true)
+
+
 Получаем классификатор Хэбба:
 ```R
 sgHeb <- function(xl, eta = 1, lambda = 1 / 6)
@@ -636,7 +655,7 @@ sgHeb <- function(xl, eta = 1, lambda = 1 / 6)
       wx <- crossprod(w, xi)
       margin <- wx * yi
       ex <- lossFunctionAdaline(margin)
-      w <- w - eta * (wx - yi) * xi
+      w <- w + eta * yi * xi
       Qprev <- Q
       Q <- (1 - lambda) * Q + lambda * ex
     } else
@@ -650,3 +669,88 @@ sgHeb <- function(xl, eta = 1, lambda = 1 / 6)
 
 Сравним его с Адаптивным линейным элементом, где крассная линия - Адаптивный, фиолетовая - Хэбба:
 ![alt text](https://github.com/nikitkuzi/ML1/blob/master/adaline/img/adaline_heb.jpeg?raw=true)
+
+## Логическая регрессия
+<a name="Логическая"></a>
+[К оглавлению](#Оглавление) 
+
+Логистическая регрессия — линейный байесовский классификатор, использующий логарифмическую функцию потерь,
+имеет ряд интересных особенностей, например, алгоритм способен помимо определения принадлежности объекта к классу определять и
+степень его принадлежности. Является одним из популярных алгоритмом классификации.
+
+Метод логистической регрессии основан на довольно сильных вероятностных
+предположениях, которые имеют несколько интересных последствий:
+1. линейный классификатор оказывается оптимальным байесовским;
+2. однозначно определяется функция потерь;
+3. можно вычислять не только принадлежность объектов классам, но
+также получать и численные оценки вероятности их принадлежности.
+
+Логистическое правило обновления весов для градиентного шага
+в методе стохастического градиента:
+![alt text](https://github.com/nikitkuzi/ML1/blob/master/adaline/img/equation5.png?raw=true)
+где ![alt text](https://github.com/nikitkuzi/ML1/blob/master/adaline/img/equation6.png?raw=true)
+
+Функция потерь:
+```R
+lossFunctionLogical <- function(x)
+{
+  return(log2(1 + exp(-x)))
+}
+```
+
+Сигмоидная функция:
+```R
+sigmoid <- function(z)
+{
+  return (1 / (1 + exp(-z)))
+}
+```
+
+Реализация метода:
+```R
+sgLogical <- function(xl, eta = 1, lambda = 1 / 6)
+{
+  l <- dim(xl)[1]
+  n <- dim(xl)[2] - 1
+  w <- c(1 / 2, 1 / 2, 1 / 2)
+  iterCount <- 0
+  Q <- 0
+  for (i in 1:l) {
+    wx <- sum(w * xl[i, 1:n])
+    margin <- wx * xl[i, n + 1]
+    Q <- Q + lossFunctionLogical(margin)
+  }
+  repeat
+  {
+    margins <- array(dim = l)
+    for (i in 1:l)
+    {
+      xi <- xl[i, 1:n]
+      yi <- xl[i, n + 1]
+      margins[i] <- crossprod(w, xi) * yi
+    }
+    errorIndexes <- which(margins <= 0)
+    if (length(errorIndexes) > 0)
+    {
+      i <- sample(1:l, 1)
+      iterCount <- iterCount + 1
+      xi <- xl[i, 1:n]
+      yi <- xl[i, n + 1]
+      wx <- crossprod(w, xi)
+      margin <- wx * yi
+      ex <- lossFunctionLogical(margin)
+      w <- w + eta * xi * yi * sigmoid(-wx * yi)
+      Qprev <- Q
+      Q <- (1 - lambda) * Q + lambda * ex
+    } else
+    {
+      break
+    }
+  }
+  return(w)
+}
+```
+![alt text](https://github.com/nikitkuzi/ML1/blob/master/adaline/img/logical.jpeg?raw=true)
+
+Сравним все вышеупомянутые методы:
+![alt text](https://github.com/nikitkuzi/ML1/blob/master/adaline/img/compare.jpeg?raw=true)

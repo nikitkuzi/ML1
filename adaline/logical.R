@@ -1,8 +1,12 @@
-lossFunctionHeb <- function(x)
+lossFunctionLogical <- function(x)
 {
-  return(if (x < 1) -x else 0)
+  return(log2(1 + exp(-x)))
 }
 
+sigmoid <- function(z)
+{
+  return (1 / (1 + exp(-z)))
+}
 
 normalize <- function(xl)
 {
@@ -20,7 +24,7 @@ addcol <- function(xl)
   xl <- cbind(xl[, 1:n], seq(from = -1, to = -1, length.out = l), xl[, n + 1])
 }
 
-sgHeb <- function(xl, eta = 1, lambda = 1 / 6)
+sgLogical <- function(xl, eta = 1, lambda = 1 / 6)
 {
   l <- dim(xl)[1]
   n <- dim(xl)[2] - 1
@@ -30,7 +34,7 @@ sgHeb <- function(xl, eta = 1, lambda = 1 / 6)
   for (i in 1:l) {
     wx <- sum(w * xl[i, 1:n])
     margin <- wx * xl[i, n + 1]
-    Q <- Q + lossFunctionAdaline(margin)
+    Q <- Q + lossFunctionLogical(margin)
   }
   repeat
   {
@@ -50,8 +54,8 @@ sgHeb <- function(xl, eta = 1, lambda = 1 / 6)
       yi <- xl[i, n + 1]
       wx <- crossprod(w, xi)
       margin <- wx * yi
-      ex <- lossFunctionAdaline(margin)
-      w <- w + eta * yi * xi
+      ex <- lossFunctionLogical(margin)
+      w <- w + eta * xi * yi * sigmoid(-wx * yi)
       Qprev <- Q
       Q <- (1 - lambda) * Q + lambda * ex
     } else
@@ -66,13 +70,13 @@ library(MASS)
 Sigma1 <- matrix(c(3, 0, 0, 3), 2, 2)
 Sigma2 <- matrix(c(3, 0, 0, 3), 2, 2)
 Mu1 <- c(3, 0)
-Mu2 <- c(8, 7)
+Mu2 <- c(10, 7)
 set1 <- mvrnorm(111, Mu1, Sigma1)
 set2 <- mvrnorm(111, Mu2, Sigma2)
 data <- rbind(cbind(set1, 1), cbind(set2, -1))
 dataNormalized <- addcol(normalize(data))
 colors <- c("1" = "blue", "-1" = "green")
-plot(dataNormalized[, 1], dataNormalized[, 2], pch = 21, bg = colors[as.character(data[, 3])], asp = 1)
+plot(dataNormalized[, 1], dataNormalized[, 2], pch = 21,bg = colors[as.character(data[,3])], asp = 1)
 
-ww <- sgHeb(dataNormalized)
-abline(a = ww[3] / ww[2], b = -ww[1] / ww[2], lwd = 3, col = "purple")
+w <- sgLogical(dataNormalized)
+abline(a = w[3] / w[2], b = -w[1] / w[2], lwd = 3, col = "red", label = "asd")
