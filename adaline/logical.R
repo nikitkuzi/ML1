@@ -5,7 +5,7 @@ lossFunctionLogical <- function(x)
 
 sigmoid <- function(z)
 {
-  return (1 / (1 + exp(-z)))
+  return(1 / (1 + exp(-z)))
 }
 
 normalize <- function(xl)
@@ -76,7 +76,16 @@ set2 <- mvrnorm(111, Mu2, Sigma2)
 data <- rbind(cbind(set1, 1), cbind(set2, -1))
 dataNormalized <- addcol(normalize(data))
 colors <- c("1" = "blue", "-1" = "green")
-plot(dataNormalized[, 1], dataNormalized[, 2], pch = 21,bg = colors[as.character(data[,3])], asp = 1)
+plot(dataNormalized[, 1], dataNormalized[, 2], pch = 21, bg = colors[as.character(data[, 3])], asp = 1)
 
 w <- sgLogical(dataNormalized)
 abline(a = w[3] / w[2], b = -w[1] / w[2], lwd = 3, col = "red", label = "asd")
+
+#colors <- c("1" = "blue", "2" = "green")
+#for (i in seq(from = -4, to = 4, by = 0.1)) {
+#  for (j in seq(from = -4, to = 4, by = 0.1)) {
+#    result <- sum(c(i, j, -1) * w)
+#    res <- sign(result)
+#    points(i, j, col = adjustcolor(colors[res], abs(result)), pch = 21)
+#  }
+#}

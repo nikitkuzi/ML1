@@ -580,6 +580,7 @@ sgAdaline <- function(xl, eta = 1, lambda = 1 / 6)
 ![alt text](https://github.com/nikitkuzi/ML1/blob/master/adaline/img/adaline.jpeg?raw=true)
 
 ## Правило Хэбба
+[К оглавлению](#Оглавление) 
 
 Персептрон обучают по правилу Хебба. Предъявляем на вход один объект. Если выходной сигнал персептрона совпадает с правильным ответом, то никаких действий предпринимать не надо. 
 В случае ошибки необходимо обучить персептрон правильно решать данный пример.
@@ -751,6 +752,7 @@ sgLogical <- function(xl, eta = 1, lambda = 1 / 6)
 }
 ```
 ![alt text](https://github.com/nikitkuzi/ML1/blob/master/adaline/img/logical.jpeg?raw=true)
-
+Карта классификации:
+![alt text](https://github.com/nikitkuzi/ML1/blob/master/adaline/img/map.jpeg?raw=true)
 Сравним все вышеупомянутые методы:
 ![alt text](https://github.com/nikitkuzi/ML1/blob/master/adaline/img/compare.jpeg?raw=true)
