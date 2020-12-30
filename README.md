@@ -751,9 +751,12 @@ sgLogical <- function(xl, eta = 1, lambda = 1 / 6)
   return(w)
 }
 ```
+
 ![alt text](https://github.com/nikitkuzi/ML1/blob/master/adaline/img/logical.jpeg?raw=true)
 
+
 Карта классификации:
+
 ![alt text](https://github.com/nikitkuzi/ML1/blob/master/adaline/img/map.jpeg?raw=true)
 
 Сравним все вышеупомянутые методы:
